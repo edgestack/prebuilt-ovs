@@ -1,0 +1,109 @@
+diff --git a/include/openvswitch/ofp-protocol.h b/include/openvswitch/ofp-protocol.h
+index 741ddc458..afbdf5370 100644
+--- a/include/openvswitch/ofp-protocol.h
++++ b/include/openvswitch/ofp-protocol.h
+@@ -151,8 +151,7 @@ enum ofputil_protocol ofputil_protocols_from_version_bitmap(uint32_t bitmap);
+                                     (1u << OFP11_VERSION) | \
+                                     (1u << OFP12_VERSION) | \
+                                     (1u << OFP13_VERSION) | \
+-                                    (1u << OFP14_VERSION) | \
+-                                    (1u << OFP15_VERSION))
++                                    (1u << OFP14_VERSION))
+ #define OFPUTIL_DEFAULT_VERSIONS OFPUTIL_SUPPORTED_VERSIONS
+ 
+ enum ofputil_protocol ofputil_protocols_from_string(const char *s);
+diff --git a/lib/ofp-version-opt.h b/lib/ofp-version-opt.h
+index f50f400d3..525fd8ac4 100644
+--- a/lib/ofp-version-opt.h
++++ b/lib/ofp-version-opt.h
+@@ -10,7 +10,7 @@
+ 
+ #define OFP_VERSION_OPTION_HANDLERS                             \
+         case 'V':                                               \
+-            ovs_print_version(OFP10_VERSION, OFP15_VERSION);    \
++            ovs_print_version(OFP10_VERSION, OFP14_VERSION);    \
+             exit(EXIT_SUCCESS);                                 \
+                                                                 \
+         case 'O':                                               \
+diff --git a/tests/learning-switch.at b/tests/learning-switch.at
+index ac2fc1b80..4107db498 100644
+--- a/tests/learning-switch.at
++++ b/tests/learning-switch.at
+@@ -1,16 +1,16 @@
+ AT_BANNER([learning switch])
+ 
+ ### -----------------------------------------------------------------
+-###   learning switch OpenFlow15 test case
++###   learning switch OpenFlow14 test case
+ ### -----------------------------------------------------------------
+ 
+-AT_SETUP([learning switch - OpenFlow15])
++AT_SETUP([learning switch - OpenFlow14])
+ dnl Start ovs-testcontroller
+ AT_CHECK([ovs-testcontroller --no-chdir --detach punix:controller --pidfile -v ptcp:], [0], [ignore])
+ dnl Start ovs
+ OVS_VSWITCHD_START([dnl
+     set bridge br0 datapath_type=dummy \
+-        protocols=OpenFlow15 -- \
++        protocols=OpenFlow14 -- \
+     add-port br0 p1 -- set Interface p1 type=dummy ofport_request=1 -- \
+     set-controller br0 tcp:127.0.0.1:6653])
+ AT_CHECK([
+diff --git a/tests/test-vconn.c b/tests/test-vconn.c
+index 96c89bd4e..3864456b1 100644
+--- a/tests/test-vconn.c
++++ b/tests/test-vconn.c
+@@ -240,7 +240,7 @@ test_read_hello(struct ovs_cmdl_context *ctx)
+        if (retval == sizeof hello) {
+            enum ofpraw raw;
+ 
+-           CHECK(hello.version, OFP15_VERSION);
++           CHECK(hello.version, OFP14_VERSION);
+            CHECK(ofpraw_decode_partial(&raw, &hello, sizeof hello), 0);
+            CHECK(raw, OFPRAW_OFPT_HELLO);
+            CHECK(ntohs(hello.length), sizeof hello);
+@@ -313,7 +313,7 @@ test_send_hello(const char *type, const void *out, size_t out_size,
+            if (retval == sizeof hello) {
+                enum ofpraw raw;
+ 
+-               CHECK(hello.version, OFP15_VERSION);
++               CHECK(hello.version, OFP14_VERSION);
+                CHECK(ofpraw_decode_partial(&raw, &hello, sizeof hello), 0);
+                CHECK(raw, OFPRAW_OFPT_HELLO);
+                CHECK(ntohs(hello.length), sizeof hello);
+@@ -364,7 +364,7 @@ test_send_plain_hello(struct ovs_cmdl_context *ctx)
+     const char *type = ctx->argv[1];
+     struct ofpbuf *hello;
+ 
+-    hello = ofpraw_alloc_xid(OFPRAW_OFPT_HELLO, OFP15_VERSION,
++    hello = ofpraw_alloc_xid(OFPRAW_OFPT_HELLO, OFP14_VERSION,
+                              htonl(0x12345678), 0);
+     test_send_hello(type, hello->data, hello->size, 0);
+     ofpbuf_delete(hello);
+@@ -380,7 +380,7 @@ test_send_long_hello(struct ovs_cmdl_context *ctx)
+     struct ofpbuf *hello;
+     enum { EXTRA_BYTES = 8 };
+ 
+-    hello = ofpraw_alloc_xid(OFPRAW_OFPT_HELLO, OFP15_VERSION,
++    hello = ofpraw_alloc_xid(OFPRAW_OFPT_HELLO, OFP14_VERSION,
+                              htonl(0x12345678), EXTRA_BYTES);
+     ofpbuf_put_zeros(hello, EXTRA_BYTES);
+     ofpmsg_update_length(hello);
+@@ -396,7 +396,7 @@ test_send_echo_hello(struct ovs_cmdl_context *ctx)
+     const char *type = ctx->argv[1];
+     struct ofpbuf *echo;
+ 
+-    echo = ofpraw_alloc_xid(OFPRAW_OFPT_ECHO_REQUEST, OFP15_VERSION,
++    echo = ofpraw_alloc_xid(OFPRAW_OFPT_ECHO_REQUEST, OFP14_VERSION,
+                              htonl(0x12345678), 0);
+     test_send_hello(type, echo->data, echo->size, EPROTO);
+     ofpbuf_delete(echo);
+@@ -422,7 +422,7 @@ test_send_invalid_version_hello(struct ovs_cmdl_context *ctx)
+     const char *type = ctx->argv[1];
+     struct ofpbuf *hello;
+ 
+-    hello = ofpraw_alloc_xid(OFPRAW_OFPT_HELLO, OFP15_VERSION,
++    hello = ofpraw_alloc_xid(OFPRAW_OFPT_HELLO, OFP14_VERSION,
+                              htonl(0x12345678), 0);
+     ((struct ofp_header *) hello->data)->version = 0;
+     test_send_hello(type, hello->data, hello->size, EPROTO);

@@ -9,7 +9,9 @@ if ! sudo -n true 2>/dev/null; then
 fi
 
 # Determine the OS release version
-if grep -q "Ubuntu 22.04" /etc/os-release; then
+if grep -q "Ubuntu 20.04" /etc/os-release; then
+        RELEASE="Ubuntu-20.04"
+elif grep -q "Ubuntu 22.04" /etc/os-release; then
 	RELEASE="Ubuntu-22.04"
 elif grep -q "Ubuntu 24.04" /etc/os-release; then
 	RELEASE="Ubuntu-24.04"
@@ -25,7 +27,9 @@ ARCH=$(arch)
 OVS_BUILD_DIR="ovs-build-dir"
 
 # Set OVS source package url based on release version
-if [[ ${RELEASE} == "Ubuntu-22.04" ]]; then
+if [[ ${RELEASE} == "Ubuntu-20.04" ]]; then
+        OVS_VERSION="2.17.10"
+elif [[ ${RELEASE} == "Ubuntu-22.04" ]]; then
 	OVS_VERSION="2.17.10"
 elif [[ ${RELEASE} == "Ubuntu-24.04" ]]; then
 	OVS_VERSION="3.3.0"
@@ -56,7 +60,7 @@ cd "${OVS_BUILD_DIR}/ovs-${OVS_VERSION}"
 patch -p1 < rollback-to-openflow14.patch
 
 # Build OVS
-if [[ ${RELEASE} == "Ubuntu-22.04" ]]; then
+if [[ ${RELEASE} == "Ubuntu-20.04" ]] || [[ ${RELEASE} == "Ubuntu-22.04" ]] ; then
 	DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b
 elif [[ ${RELEASE} == "Ubuntu-24.04" ]]; then
 	./boot.sh && ./configure && make debian

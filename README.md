@@ -1,6 +1,7 @@
 # Prebuilt OVS
 
 Supported OS:
+- Ubuntu 20.04 / OVS version 2.17.10
 - Ubuntu 22.04 / OVS version 2.17.10
 - Ubuntu 24.04 / OVS version 3.3.0
 

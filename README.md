@@ -1,8 +1,8 @@
 # Prebuilt OVS
 
 Supported OS:
-- Rocky 8 / OVS version 3.1
-- Rocky 9 / OVS version 3.3
+- Ubuntu 22.04 / OVS version 2.17.10
+- Ubuntu 24.04 / OVS version 3.3.0
 
 ## ONOS SONA OpenFlow Version Issue
 
@@ -12,12 +12,11 @@ Supported OS:
 ## OVS Install Guide
 
 ``` bash
-sudo dnf install -y epel-release
-pushd [RELEASE]/[ARCH]
-sudo dnf install *.rpm
-popd
+sudo apt-get update -y
+sudo dpkg -i $(ls ./*.deb | grep -v "openvswitch-ipsec"| grep -v "openvswitch-datapath")
+sudo apt-get install -f
 ```
 
-## OVS RPM Build Guide
+## OVS DEB Build Guide
 
-Run `./build-rpm.sh`
+Run `./build-deb.sh`

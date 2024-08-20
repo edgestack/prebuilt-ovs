@@ -38,7 +38,7 @@ PKG_SRC="https://github.com/openvswitch/ovs/archive/refs/tags/v${OVS_VERSION}.ta
 
 # Install dependencies
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install build-essential fakeroot autoconf libtool -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install build-essential fakeroot autoconf libtool devscripts debhelper -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install debhelper-compat dh-python graphviz libcap-ng-dev libdbus-1-dev libdpdk-dev libnuma-dev libpcap-dev libssl-dev libunbound-dev pkg-config python3-all-dev python3-sortedcontainers python3-sphinx dh-make -y
 
 # Download OVS sources
@@ -56,6 +56,7 @@ cd "${OVS_BUILD_DIR}/ovs-${OVS_VERSION}"
 patch -p1 < rollback-to-openflow14.patch
 
 # Build OVS
-DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b
+#DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b
+debuild -us -uc -b
 
 echo "${RELEASE} ${ARCH} RPM build completed successfully."

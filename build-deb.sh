@@ -56,7 +56,14 @@ cd "${OVS_BUILD_DIR}/ovs-${OVS_VERSION}"
 patch -p1 < rollback-to-openflow14.patch
 
 # Build OVS
-./boot.sh && ./configure
-DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b
+if [[ ${RELEASE} == "Ubuntu-22.04" ]]; then
+	DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b
+elif [[ ${RELEASE} == "Ubuntu-24.04" ]]; then
+	./boot.sh && ./configure && make debian
+	make debian-deb
+else
+	echo "Unknown RELEASE: ${RELEASE}"
+	exit 1
+fi
 
 echo "${RELEASE} ${ARCH} RPM build completed successfully."

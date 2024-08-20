@@ -39,7 +39,7 @@ PKG_SRC="https://github.com/openvswitch/ovs/archive/refs/tags/v${OVS_VERSION}.ta
 # Install dependencies
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install build-essential fakeroot autoconf libtool devscripts debhelper -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install debhelper-compat dh-python graphviz libcap-ng-dev libdbus-1-dev libdpdk-dev libnuma-dev libpcap-dev libssl-dev libunbound-dev pkg-config python3-all-dev python3-sortedcontainers python3-sphinx dh-make -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install debhelper-compat dh-python graphviz libcap-ng-dev libdbus-1-dev libdpdk-dev libnuma-dev libpcap-dev libssl-dev libunbound-dev pkg-config python3-all-dev python3-sortedcontainers python3-sphinx dh-make libunwind-dev -y
 
 # Download OVS sources
 rm -rf ${OVS_BUILD_DIR}

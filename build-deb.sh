@@ -56,7 +56,6 @@ cd "${OVS_BUILD_DIR}/ovs-${OVS_VERSION}"
 patch -p1 < rollback-to-openflow14.patch
 
 # Build OVS
-#DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b
-debuild -us -uc -b
+DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b
 
 echo "${RELEASE} ${ARCH} RPM build completed successfully."
